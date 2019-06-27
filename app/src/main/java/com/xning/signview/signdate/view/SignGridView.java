@@ -1,4 +1,4 @@
-package com.xning.signview.signdate;
+package com.xning.signview.signdate.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

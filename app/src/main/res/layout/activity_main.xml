@@ -3,13 +3,13 @@
         android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
+        android:layout_height="match_parent">
 
-    <com.xning.signview.signdate.SignView
+    <com.xning.signview.signdate.view.SignView
             android:id="@+id/signDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-    </com.xning.signview.signdate.SignView>
+    </com.xning.signview.signdate.view.SignView>
 
     <Button
             android:layout_marginTop="5dp"
@@ -19,5 +19,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/shape_sky_blue_frame"
             android:singleLine="true"/>
+
 
 </LinearLayout>

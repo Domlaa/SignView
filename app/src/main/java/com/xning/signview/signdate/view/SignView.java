@@ -1,4 +1,4 @@
-package com.xning.signview.signdate;
+package com.xning.signview.signdate.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.xning.signview.R;
+import com.xning.signview.signdate.DateAdapter;
+import com.xning.signview.signdate.DateUtil;
 
 /**
  * 签到控件
@@ -32,10 +34,8 @@ public class SignView extends LinearLayout {
     }
 
 
-    private void init(){
-        int year = DateUtil.getCurrentYear();
-        int month = DateUtil.getCurrentMonth();
-        init(year,month);
+    public void init(){
+        init(DateUtil.YEAR,DateUtil.MONTH);
     }
 
     public void init(int year,int month){
@@ -45,9 +45,8 @@ public class SignView extends LinearLayout {
         tvYear.setText(year+"-"+month);
         adapterDate = new DateAdapter(getContext(),year,month);
         gvDate.setAdapter(adapterDate);
+
     }
-
-
 
     public void signIn(DateAdapter.OnSignListener onSignedSuccess){
         adapterDate.signIn(onSignedSuccess);

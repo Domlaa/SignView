@@ -1,4 +1,4 @@
-package com.xning.signview.signdate;
+package com.xning.signview.signdate.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

@@ -1,6 +1,9 @@
 package com.xning.signview;
 
+import com.xning.signview.signdate.DateUtil;
 import org.junit.Test;
+
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -12,6 +15,11 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+        int y = 2019;
+        int m = 9;
+
+        String mm=m>10?"-":"-0";
+
+      System.out.println(y+mm+m);
     }
 }

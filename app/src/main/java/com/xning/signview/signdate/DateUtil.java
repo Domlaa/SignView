@@ -1,6 +1,5 @@
 package com.xning.signview.signdate;
 
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,8 +11,23 @@ import java.util.Locale;
 
 public class DateUtil {
 
+    private static final String TAG = "DateUtil--->>>";
 
-    private static final String TAG = "DateUtil";
+    public static int YEAR;
+    public static int MONTH;
+    public static int DAY;
+    public static String CURRENT;
+
+
+    static {
+        Calendar a = Calendar.getInstance();
+        YEAR = a.get(Calendar.YEAR);
+        MONTH = a.get(Calendar.MONTH) + 1;
+        DAY = a.get(Calendar.DAY_OF_MONTH);
+
+        CURRENT = getDate(new Date(),"YYYY-MM-dd");
+    }
+
 
     public static String getDate(Date source,String style) {
         SimpleDateFormat mdhm = new SimpleDateFormat(style,Locale.getDefault());//年 月 日
@@ -36,36 +50,16 @@ public class DateUtil {
         Calendar a = Calendar.getInstance();
         a.set(year,month-1,1);//把日期设置为当月第一天 月减一
         a.roll(Calendar.DATE, -1);//日期回滚一天，也就是最后一天
-        int maxDate = a.get(Calendar.DATE);
-        return maxDate;
+        return a.get(Calendar.DATE);
     }
 
     public static int getFirstDayOfMonth(int year,int month){
         Calendar a = Calendar.getInstance();
         a.set(year,month-1,1); //月要减一
         a.set(Calendar.DAY_OF_MONTH,1);//设为第一天
-        int i = a.get(Calendar.DAY_OF_WEEK);
-        return i;
+        return a.get(Calendar.DAY_OF_WEEK);
     }
 
-    public static int getToday(){
-        Calendar a = Calendar.getInstance();
-        int day = a.get(Calendar.DAY_OF_MONTH);
-        return day;
-    }
-
-    public static int getCurrentMonth(){
-        Calendar a = Calendar.getInstance();
-        int month = a.get(Calendar.MONTH) + 1;
-        return  month;
-    }
-
-    public static int getCurrentYear(){
-        Calendar a = Calendar.getInstance();
-
-        int year = a.get(Calendar.YEAR);
-        return year;
-    }
 
     // 字符串类型日期转化成date类型
     public static Date strToDate(String style, String date) {
@@ -79,25 +73,25 @@ public class DateUtil {
     }
 
 
-    public static String clanderTodatetime(Calendar calendar, String style) {
+    public static String calendarToDateTime(Calendar calendar, String style) {
         Date time = calendar.getTime();
         return getDate(time,style);
     }
 
+    public static int[] getYMD(String formatDateString) {
+        int[] YMD = new int[3];
+        YMD[0] = Integer.parseInt(formatDateString.substring(0, 4));
+        YMD[1] = Integer.parseInt(formatDateString.substring(formatDateString.indexOf("-") + 1, formatDateString.lastIndexOf("-")));
+        YMD[2] = Integer.parseInt(formatDateString.substring(formatDateString.lastIndexOf("-") + 1, formatDateString.length()));
+        return YMD;
+    }
 
-    public static List<Boolean> dateConvert(int year, int month, List<Date> source, List<Boolean> record, int dif) {
-        SimpleDateFormat yy = new SimpleDateFormat("YYYY",Locale.getDefault());//年
-        SimpleDateFormat mm = new SimpleDateFormat("MM",Locale.getDefault());//月
-        SimpleDateFormat dd = new SimpleDateFormat("dd",Locale.getDefault());//月
-        for (Date aSource : source) {
-            int y = Integer.parseInt(yy.format(aSource));
-            if (year == y) {//年相同
-                int m = Integer.parseInt(mm.format(aSource));
-                if (month==m){//月相同
-                    int d = Integer.parseInt(dd.format(aSource));
-                    record.set(d + dif, true);
-                    Log.i(TAG, "设置签到: " + d);
-                }
+
+    public static List<Boolean> dateConvert(int year, int month, List<String> source, List<Boolean> record, int dif) {
+        for (String s : source) {
+            int[] YMD = getYMD(s);
+            if (year == YMD[0] && month == YMD[1]) {//年月相同
+                    record.set(YMD[2] + dif, true);
             }
         }
         return record;

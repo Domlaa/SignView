@@ -7,8 +7,8 @@
     android:background="@android:color/white">
 
     <LinearLayout
-            android:gravity="center"
             android:background="#6CC9ED"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <TextView
@@ -43,10 +43,10 @@
 
     <View style="@style/divider_horizontal_1px"/>
 
-    <com.xning.signview.signdate.SignGridView
+    <com.xning.signview.signdate.view.SignGridView
         android:id="@+id/gvDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="7">
-    </com.xning.signview.signdate.SignGridView>
+    </com.xning.signview.signdate.view.SignGridView>
 </LinearLayout>

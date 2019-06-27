@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.xning.signview.R;
-import org.litepal.LitePal;
+import com.xning.signview.signdate.sign.SignInHelper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -28,10 +27,12 @@ public class DateAdapter extends BaseAdapter {
     //签到状态，用来判断坐标中哪个位置是已经签到的
     private List<Boolean> status = new ArrayList<>();
 
-    private List<SignIn> signIns;//数据库查到的签到记录
+    private List<String> signIns;//数据库查到的签到记录
     private  int maxDay,firstDay,dif; //
 
     private int current_year, current_mon;
+
+    private SignInHelper helper;
 
     public interface OnSignListener {
         void OnSignedSucceed();
@@ -46,14 +47,19 @@ public class DateAdapter extends BaseAdapter {
         current_year = year;
         current_mon = month;
 
-        signIns = LitePal.where("sid=?",String.valueOf(5)).find(SignIn.class);//这个5可以看成是用户的id
+         helper = new SignInHelper(context);
+
+        signIns = helper.query(year,month);
+
+
+        Log.i(TAG, "查到的数据:"+signIns);
 
         maxDay = DateUtil.getCurrentMonthLastDay(year,month);//获取当月天数
 
         //firstDay(1-7)  获取当月第一天是星期几，星期日是第一天, 数字为1，代表这个月的第一天是星期天，依次类推
         firstDay = DateUtil.getFirstDayOfMonth(year,month);
 
-        Log.i(TAG, "year:"+year+" mon:"+month+" firstDay:"+firstDay+" maxDay:"+maxDay);
+        //Log.i(TAG, "year:"+year+" mon:"+month+" firstDay:"+firstDay+" maxDay:"+maxDay);
 
         //dif,实际定义的status坐标与日期是有差异的，经过实验和对比后，发现在显示已经签到的日期格子时，
         //显示的位置与实际位置总是有差别，即有时候在签到日期是8号，但是打勾的是6号日期的格子。经过查询规律发现，
@@ -63,10 +69,7 @@ public class DateAdapter extends BaseAdapter {
         // gridView默认坐标从0开始，此时需要加上偏差 这时的偏差dif= 1-2=-1）
         dif = firstDay -2;
 
-        System.out.println("dif=="+dif);
-
         for (int i = 0; i < firstDay - 1; i++) {
-            System.out.println("当前星期："+firstDay);
             days.add(0);
             //0代表需要隐藏的item
             status.add(false);
@@ -79,8 +82,7 @@ public class DateAdapter extends BaseAdapter {
             status.add(false);
             //初始化日历签到状态
         }
-
-        status = getRecord(signIns,status);
+        status = DateUtil.dateConvert(current_year, current_mon,signIns,status,dif);
     }
 
     @Override
@@ -131,29 +133,15 @@ public class DateAdapter extends BaseAdapter {
         ImageView ivStatus;
     }
 
-
     public void signIn(OnSignListener listener){
-        int day = DateUtil.getToday();
-        SignIn signIn = new SignIn(5,new Date());
-        if(signIn.save()){
-            listener.OnSignedSucceed();
-            status.set(day+dif,true);
-            notifyDataSetChanged();
-        }else listener.OnSignedFail();
+        helper.insert(DateUtil.CURRENT);
+        notifyDataSetChanged();
+        listener.OnSignedSucceed();
     }
 
-    public List<Boolean> getRecord(List<SignIn> signIns,List<Boolean> record){
-        System.out.println("size-->>"+signIns.size());
-        List<Date> dates = new ArrayList<>();
-        for(SignIn s : signIns){
-            dates.add(s.getDate());
-        }
-        return DateUtil.dateConvert(current_year, current_mon,dates,record,dif);
-    }
 
     public boolean isSign(){
-        int day = DateUtil.getToday();
-        return status.get(day+dif);
+        return status.get(DateUtil.DAY+dif);
     }
 
 }
